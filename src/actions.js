@@ -3,7 +3,8 @@ import { SubmissionError } from 'redux-form';
 const API = 'https://us-central1-delivery-form-api.cloudfunctions.net/api/report';
 export const MAKE_COMPLAINT = 'MAKE_COMPLAINT';
 
-export function makeComplaint(complaint){
+export const makeComplaint = complaint => dispatch => {
+
   return fetch(API, {
     method: 'POST',
     headers: {
@@ -14,10 +15,8 @@ export function makeComplaint(complaint){
   .then(res => normalizeResponseError(res))
   .then(res => res.json())
   .catch(err => {
-    if(err.code === 404){
-      new SubmissionError({ _error: err.message });
-    }
-  })
+    return Promise.reject(new SubmissionError({ _error: err.message }));
+  });
 }
 
 function normalizeResponseError(res){
